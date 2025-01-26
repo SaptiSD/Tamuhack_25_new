@@ -5,30 +5,74 @@
     <h1 class="text-3xl font-bold text-[#71A300]">Optimize Your Energy Usage</h1>
     <div class="mt-6 bg-white shadow-lg rounded-lg p-6">
         <!-- User Input Form -->
-        <form id="optimizationForm" class="mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="electricity" class="block text-lg font-bold text-[#71A300]">Electricity Price (per kWh):</label>
-                    <input type="number" id="electricity" name="electricity" class="w-full border border-gray-300 rounded p-2" placeholder="Enter electricity price">
-                </div>
-                <div>
-                    <label for="naturalGas" class="block text-lg font-bold text-[#71A300]">Natural Gas Usage (therms):</label>
-                    <input type="number" id="naturalGas" name="naturalGas" class="w-full border border-gray-300 rounded p-2" placeholder="Enter natural gas usage">
-                </div>
-                <div>
-                    <label for="steam" class="block text-lg font-bold text-[#71A300]">Steam Usage (lbs):</label>
-                    <input type="number" id="steam" name="steam" class="w-full border border-gray-300 rounded p-2" placeholder="Enter steam usage">
-                </div>
-                <div>
-                    <label for="totalEnergy" class="block text-lg font-bold text-[#71A300]">Total Energy Usage (kWh):</label>
-                    <input type="number" id="totalEnergy" name="totalEnergy" class="w-full border border-gray-300 rounded p-2" placeholder="Enter total energy usage">
-                </div>
+        <form id="optimizationForm" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Borough Dropdown Section -->
+            <div class="col-span-2">
+                <label for="borough" class="block text-sm font-bold text-[#71A300]">Select Borough:</label>
+                <select id="borough" name="borough" class="w-full border border-gray-300 rounded p-2">
+                    <option value="Manhattan">Manhattan</option>
+                    <option value="Brooklyn">Brooklyn</option>
+                    <option value="Queens">Queens</option>
+                    <option value="Bronx">Bronx</option>
+                    <option value="Staten Island">Staten Island</option>
+                </select>
             </div>
-            <button type="button" id="predictButton" class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Predict & Optimize</button>
+
+            <!-- Additional Questionnaire Inputs -->
+            <div>
+                <label for="squareFootage" class="block text-sm font-bold text-[#71A300]">Square Footage:</label>
+                <input type="number" id="squareFootage" name="squareFootage" class="w-full border border-gray-300 rounded p-2" placeholder="Sq. Ft.">
+            </div>
+
+            <div>
+                <label for="staffOccupancy" class="block text-sm font-bold text-[#71A300]">Staff Occupancy:</label>
+                <input type="number" id="staffOccupancy" name="staffOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Staff Count">
+            </div>
+
+            <div>
+                <label for="studentOccupancy" class="block text-sm font-bold text-[#71A300]">Student Occupancy:</label>
+                <input type="number" id="studentOccupancy" name="studentOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Student Count">
+            </div>
+
+            <div>
+                <label for="numberOfFloors" class="block text-sm font-bold text-[#71A300]">Number of Floors:</label>
+                <input type="number" id="numberOfFloors" name="numberOfFloors" class="w-full border border-gray-300 rounded p-2" placeholder="Floors">
+            </div>
+
+            <div>
+                <label for="windowInsulation" class="block text-sm font-bold text-[#71A300]">Window Insulation:</label>
+                <select id="windowInsulation" name="windowInsulation" class="w-full border border-gray-300 rounded p-2">
+                    <option value="Poor">Poor</option>
+                    <option value="Average">Average</option>
+                    <option value="Good">Good</option>
+                    <option value="Excellent">Excellent</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="hvacSystem" class="block text-sm font-bold text-[#71A300]">HVAC System Efficiency:</label>
+                <select id="hvacSystem" name="hvacSystem" class="w-full border border-gray-300 rounded p-2">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="averageHoursOperation" class="block text-sm font-bold text-[#71A300]">Average Hours of Operation (weekly):</label>
+                <input type="number" id="averageHoursOperation" name="averageHoursOperation" class="w-full border border-gray-300 rounded p-2" placeholder="Hours">
+            </div>
+
+            <div>
+                <label for="peakHours" class="block text-sm font-bold text-[#71A300]">Peak Hours of Operation (weekly):</label>
+                <input type="number" id="averageHoursOperation" name="averageHoursOperation" class="w-full border border-gray-300 rounded p-2" placeholder="Hours">
+            </div>
         </form>
 
+        <button type="button" id="predictButton" class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Predict & Optimize</button>
+
         <!-- Prediction Chart -->
-        <div class="chart-container mx-auto max-w-4xl">
+        <div class="chart-container mx-auto max-w-4xl mt-6">
             <canvas id="predictionChart" style="width:100%;max-width:800px;height:400px;"></canvas>
         </div>
 
@@ -44,6 +88,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    let energyData;
+
+    // Fetch the JSON file with the school energy data
+    fetch('/path/to/nyc_schools_energy_dynamodb.json') // Adjust the path to your JSON file
+        .then(response => response.json())
+        .then(data => {
+            energyData = data;
+        })
+        .catch(error => console.error('Error loading JSON data:', error));
+
     document.getElementById('predictButton').addEventListener('click', function () {
         // Simulated prediction data for demonstration
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
