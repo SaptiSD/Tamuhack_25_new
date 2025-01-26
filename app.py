@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Path to JSON data file
-DATA_FILE = '/Users/travis/Desktop/Projects/tamuHack25/Tamuhack_25_new/static/data/nyc_schools_energy_dynamodb.json'
+DATA_FILE = 'Tamuhack_25_new/static/data/nyc_schools_energy_dynamodb.json'
 
 def load_borough_data(file_path, borough):
     """Load and filter data for a specific borough from a JSON file."""
