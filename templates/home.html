@@ -198,7 +198,7 @@
                 L.circle(coords, {
                   color: "yellow",
                   fillColor: "yellow",
-                  fillOpacity: intensity,
+                  fillOpacity: 0.5,
                   radius: 1700 * intensity,
                 }).bindPopup(
                   `<b>${borough}</b><br>Natural Gas: ${avgUsage.toFixed(2)}`
@@ -226,7 +226,7 @@
                 L.circle(coords, {
                   color: "purple",
                   fillColor: "purple",
-                  fillOpacity: intensity,
+                  fillOpacity: 0.5,
                   radius: 3500 * intensity,
                 }).bindPopup(
                   `<b>${borough}</b><br>All Combined: ${avgUsage.toFixed(2)}`
