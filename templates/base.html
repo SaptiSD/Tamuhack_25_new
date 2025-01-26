@@ -15,19 +15,47 @@
 </head>
 <body class="bg-[#F4F9F4] text-gray-900">
     <!-- Header and Navigation -->
-    <header class="bg-[#71A300] text-white">
-        <div class="container mx-auto flex justify-between items-center py-4 px-6">
-            <a href="/" class="text-2xl font-bold">SimpliSustain</a>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="/" class="hover:underline">Home</a></li>
-                    <li><a href="/statistics" class="hover:underline">Statistics</a></li>
-                    <li><a href="/optimize" class="hover:underline">Optimize</a></li>
-                    <li><a href="/about" class="hover:underline">About</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <header class="bg-green-600 text-white">
+    <div class="container mx-auto flex justify-between items-center py-4 px-6">
+        <!-- Updated Logo -->
+        <a href="/" class="text-3xl font-bold">SimpliSustain</a>
+        
+        <!-- Updated Navigation -->
+        <nav>
+            <ul class="flex space-x-6">
+                <li>
+                    <a 
+                        href="/" 
+                        class="font-semibold text-lg px-4 py-2 rounded-lg transition duration-300 transform hover:bg-white hover:text-green-700 hover:scale-105">
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="/statistics" 
+                        class="font-semibold text-lg px-4 py-2 rounded-lg transition duration-300 transform hover:bg-white hover:text-green-700 hover:scale-105">
+                        Statistics
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="/optimize" 
+                        class="font-semibold text-lg px-4 py-2 rounded-lg transition duration-300 transform hover:bg-white hover:text-green-700 hover:scale-105">
+                        Optimize
+                    </a>
+                </li>
+                <li>
+                    <a 
+                        href="/about" 
+                        class="font-semibold text-lg px-4 py-2 rounded-lg transition duration-300 transform hover:bg-white hover:text-green-700 hover:scale-105">
+                        About
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
     
     <!-- Main Content -->
     <main class="container mx-auto p-4">
@@ -35,8 +63,44 @@
     </main>
     
     <!-- Footer -->
-    <footer class="bg-[#558000] text-white text-center py-4 mt-10">
-        <p>&copy; 2025 SimpliSustain. All Rights Reserved.</p>
+    <footer class="bg-green-600 text-white py-6">
+        <div class="container mx-auto text-center space-y-4">
+            <!-- Logo and Description -->
+            <div>
+                <a href="/" class="text-2xl font-bold hover:text-green-300 transition">SimpliSustain</a>
+                <p class="text-sm mt-2">Empowering sustainable solutions for a better tomorrow.</p>
+            </div>
+    
+            <!-- Social Media Icons -->
+            <div class="flex justify-center space-x-6">
+                <a href="https://facebook.com" target="_blank" class="hover:text-green-300 transition">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12c0-5.522-4.478-10-10-10S2 6.478 2 12c0 4.991 3.657 9.128 8.438 9.876v-6.99H7.896v-2.886h2.542V9.797c0-2.507 1.493-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.457h-1.26c-1.242 0-1.63.772-1.63 1.56v1.874h2.773l-.443 2.886h-2.33v6.99C18.343 21.128 22 16.991 22 12z"/>
+                    </svg>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="hover:text-green-300 transition">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775 1.014-.604 1.794-1.56 2.163-2.723-.949.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124-4.086-.205-7.72-2.16-10.148-5.134-.423.722-.666 1.56-.666 2.453 0 1.692.861 3.188 2.17 4.067-.802-.026-1.555-.245-2.213-.612v.062c0 2.363 1.683 4.337 3.918 4.785-.41.111-.843.171-1.292.171-.314 0-.615-.03-.916-.086.616 1.926 2.406 3.328 4.526 3.368-1.66 1.303-3.757 2.081-6.032 2.081-.39 0-.779-.023-1.17-.068 2.153 1.384 4.712 2.191 7.457 2.191 8.954 0 13.842-7.413 13.842-13.842 0-.21-.005-.42-.015-.63.949-.684 1.77-1.538 2.423-2.513z"/>
+                    </svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="hover:text-green-300 transition">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.271c-.966 0-1.75-.792-1.75-1.729s.784-1.729 1.75-1.729 1.75.792 1.75 1.729-.784 1.729-1.75 1.729zm13.5 10.271h-3v-4.554c0-2.687-3-2.484-3 0v4.554h-3v-9h3v1.26c1.396-2.586 6-2.777 6 2.476v5.264z"/>
+                    </svg>
+                </a>
+            </div>
+    
+            <!-- Back to Top Button -->
+            <div>
+                <a href="#top" class="inline-block bg-green-700 text-white px-4 py-2 rounded-full hover:bg-white hover:text-green-700 transition duration-300">
+                    Back to Top
+                </a>
+            </div>
+    
+            <!-- Footer Text -->
+            <p class="text-sm mt-4">&copy; 2025 SimpliSustain. All Rights Reserved.</p>
+        </div>
     </footer>
+    
 </body>
 </html>
