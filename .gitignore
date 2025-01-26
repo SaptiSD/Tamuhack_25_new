@@ -170,5 +170,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-#OPEN_AI_API_KEY
-openai.api_key
+#.env
+.env
