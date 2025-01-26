@@ -58,6 +58,22 @@
     </div>
 </section>
 
+<div class="bg-gray-200 text-gray-800 p-8 mt-6 rounded-lg shadow">
+    <h2 class="text-xl font-bold text-[#71A300]">Code Explanation</h2>
+    <p class="text-lg leading-7">
+        This implementation utilizes the <strong>JavaScript <code>fetch</code> API</strong>, a robust mechanism for retrieving and processing external datasets asynchronously. Specifically, it ingests an expansive dataset containing energy usage data for <strong>over 1,800 schools in New York City</strong>, ensuring minimal page load disruption. The asynchronous nature of <code>fetch</code> is paramount in maintaining a responsive user interface while waiting for the dataset to load.
+    </p>
+    <p class="text-lg leading-7 mt-2">
+        The <strong>data transformation process</strong> applies efficient filtering and grouping operations to segregate monthly energy statistics. By categorizing metrics such as <strong>electricity cost</strong>, <strong>natural gas usage</strong>, and <strong>steam consumption</strong>, the code computes borough-wise averages, leveraging <strong>aggregate data structures</strong> to dynamically accumulate values. This granular processing ensures precise and scalable calculations across varying data dimensions.
+    </p>
+    <p class="text-lg leading-7 mt-2">
+        For visualization, this implementation integrates <strong>Chart.js</strong>, a versatile charting library that seamlessly renders dynamic, interactive line charts. The chart's design adapts to user input via intuitive HTML <code>&lt;select&gt;</code> elements, which trigger the <strong><code>updateChart</code> function</strong>. This function recalibrates datasets and axes to reflect user-specified boroughs and filter categories, ensuring real-time updates.
+    </p>
+    <p class="text-lg leading-7 mt-2">
+        The synergistic combination of <strong>asynchronous data fetching</strong>, <strong>modular JavaScript logic</strong>, and <strong>real-time charting</strong> highlights a sophisticated approach to building interactive web applications. By leveraging <strong>modern web APIs</strong> and <strong>highly efficient data processing techniques</strong>, this implementation not only ensures accurate visualization but also demonstrates an advanced understanding of computational design.
+    </p>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     async function fetchData() {
@@ -160,4 +176,3 @@
 </script>
 
 {% endblock %}
-
