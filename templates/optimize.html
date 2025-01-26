@@ -5,11 +5,11 @@
     <h1 class="text-3xl font-bold text-[#71A300]">Optimize Your Energy Usage</h1>
     <div class="mt-6 bg-white shadow-lg rounded-lg p-6">
         <!-- User Input Form -->
-        <form id="optimizationForm" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Borough Dropdown Section -->
+        <form id="optimizationForm" method="POST" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="col-span-2">
                 <label for="borough" class="block text-sm font-bold text-[#71A300]">Select Borough:</label>
-                <select id="borough" name="borough" class="w-full border border-gray-300 rounded p-2">
+                <select id="borough" name="borough" class="w-full border border-gray-300 rounded p-2" required>
+                    <option value="">Select a Borough</option>
                     <option value="Manhattan">Manhattan</option>
                     <option value="Brooklyn">Brooklyn</option>
                     <option value="Queens">Queens</option>
@@ -18,30 +18,29 @@
                 </select>
             </div>
 
-            <!-- Additional Questionnaire Inputs -->
             <div>
                 <label for="squareFootage" class="block text-sm font-bold text-[#71A300]">Square Footage:</label>
-                <input type="number" id="squareFootage" name="squareFootage" class="w-full border border-gray-300 rounded p-2" placeholder="Sq. Ft.">
+                <input type="number" id="squareFootage" name="squareFootage" class="w-full border border-gray-300 rounded p-2" placeholder="Sq. Ft." required>
             </div>
 
             <div>
                 <label for="staffOccupancy" class="block text-sm font-bold text-[#71A300]">Staff Occupancy:</label>
-                <input type="number" id="staffOccupancy" name="staffOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Staff Count">
+                <input type="number" id="staffOccupancy" name="staffOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Staff Count" required>
             </div>
 
             <div>
                 <label for="studentOccupancy" class="block text-sm font-bold text-[#71A300]">Student Occupancy:</label>
-                <input type="number" id="studentOccupancy" name="studentOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Student Count">
+                <input type="number" id="studentOccupancy" name="studentOccupancy" class="w-full border border-gray-300 rounded p-2" placeholder="Student Count" required>
             </div>
 
             <div>
                 <label for="numberOfFloors" class="block text-sm font-bold text-[#71A300]">Number of Floors:</label>
-                <input type="number" id="numberOfFloors" name="numberOfFloors" class="w-full border border-gray-300 rounded p-2" placeholder="Floors">
+                <input type="number" id="numberOfFloors" name="numberOfFloors" class="w-full border border-gray-300 rounded p-2" placeholder="Floors" required>
             </div>
 
             <div>
                 <label for="windowInsulation" class="block text-sm font-bold text-[#71A300]">Window Insulation:</label>
-                <select id="windowInsulation" name="windowInsulation" class="w-full border border-gray-300 rounded p-2">
+                <select id="windowInsulation" name="windowInsulation" class="w-full border border-gray-300 rounded p-2" required>
                     <option value="Poor">Poor</option>
                     <option value="Average">Average</option>
                     <option value="Good">Good</option>
@@ -51,7 +50,7 @@
 
             <div>
                 <label for="hvacSystem" class="block text-sm font-bold text-[#71A300]">HVAC System Efficiency:</label>
-                <select id="hvacSystem" name="hvacSystem" class="w-full border border-gray-300 rounded p-2">
+                <select id="hvacSystem" name="hvacSystem" class="w-full border border-gray-300 rounded p-2" required>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -60,16 +59,18 @@
 
             <div>
                 <label for="averageHoursOperation" class="block text-sm font-bold text-[#71A300]">Average Hours of Operation (weekly):</label>
-                <input type="number" id="averageHoursOperation" name="averageHoursOperation" class="w-full border border-gray-300 rounded p-2" placeholder="Hours">
+                <input type="number" id="averageHoursOperation" name="averageHoursOperation" class="w-full border border-gray-300 rounded p-2" placeholder="Hours" required>
             </div>
 
             <div>
                 <label for="peakHours" class="block text-sm font-bold text-[#71A300]">Peak Hours of Operation (weekly):</label>
-                <input type="number" id="averageHoursOperation" name="averageHoursOperation" class="w-full border border-gray-300 rounded p-2" placeholder="Hours">
+                <input type="number" id="peakHours" name="peakHours" class="w-full border border-gray-300 rounded p-2" placeholder="Hours" required>
+            </div>
+
+            <div class="col-span-2">
+                <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Predict & Optimize</button>
             </div>
         </form>
-
-        <button type="button" id="predictButton" class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Predict & Optimize</button>
 
         <!-- Prediction Chart -->
         <div class="chart-container mx-auto max-w-4xl mt-6">
@@ -79,112 +80,65 @@
         <!-- Suggestions -->
         <div id="suggestions" class="mt-6 bg-gray-100 shadow-md rounded-lg p-6 hidden">
             <h2 class="text-2xl font-bold text-[#71A300] mb-4">Optimization Suggestions</h2>
-            <ul class="list-disc pl-6 text-left text-lg" id="suggestionList">
-                <!-- Suggestions will be dynamically inserted here -->
-            </ul>
+            <ul class="list-disc pl-6 text-left text-lg" id="suggestionList"></ul>
         </div>
     </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    let energyData;
+    document.getElementById('optimizationForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    // Fetch the JSON file with the school energy data
-    fetch('/path/to/nyc_schools_energy_dynamodb.json') // Adjust the path to your JSON file
-        .then(response => response.json())
-        .then(data => {
-            energyData = data;
-        })
-        .catch(error => console.error('Error loading JSON data:', error));
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
 
-    document.getElementById('predictButton').addEventListener('click', function () {
-        // Simulated prediction data for demonstration
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const electricityData = months.map(() => Math.random() * 200);
-        const naturalGasData = months.map(() => Math.random() * 150);
-        const steamData = months.map(() => Math.random() * 100);
-        const totalEnergyData = months.map(() => Math.random() * 300);
-
-        // Update chart
-        const ctx = document.getElementById('predictionChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [
-                    {
-                        label: 'Electricity Price',
-                        data: electricityData,
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Natural Gas Usage',
-                        data: naturalGasData,
-                        borderColor: 'yellow',
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Steam Usage',
-                        data: steamData,
-                        borderColor: 'red',
-                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Total Energy Usage',
-                        data: totalEnergyData,
-                        borderColor: 'green',
-                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
-                        fill: true,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
+        try {
+            const response = await fetch('/optimize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Months',
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Usage / Price',
-                        },
-                    },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+
+            // Update the chart
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: Object.keys(result.predictions).map((key, index) => ({
+                        label: key,
+                        data: result.predictions[key],
+                        borderColor: ['blue', 'yellow', 'red', 'green'][index],
+                        backgroundColor: ['rgba(0, 0, 255, 0.1)', 'rgba(255, 215, 0, 0.1)', 'rgba(255, 0, 0, 0.1)', 'rgba(0, 255, 0, 0.1)'][index],
+                        fill: true,
+                    })),
                 },
-            },
-        });
+            });
 
-        // Generate suggestions
-        const suggestions = [
-            'Lower heating settings during winter to save on natural gas.',
-            'Switch to energy-efficient appliances to reduce electricity costs.',
-            'Seal windows and doors to retain heat and reduce steam usage.',
-            'Consider solar panels to offset total energy usage.'
-        ];
-        const suggestionList = document.getElementById('suggestionList');
-        suggestionList.innerHTML = '';
-        suggestions.forEach(suggestion => {
-            const li = document.createElement('li');
-            li.textContent = suggestion;
-            suggestionList.appendChild(li);
-        });
+            // Update suggestions
+            const suggestionList = document.getElementById('suggestionList');
+            suggestionList.innerHTML = '';
+            Object.values(result.suggestions).flat().forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion;
+                suggestionList.appendChild(li);
+            });
 
-        // Show suggestions section
-        document.getElementById('suggestions').classList.remove('hidden');
+            document.getElementById('suggestions').classList.remove('hidden');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while processing the request.');
+        }
     });
 </script>
 {% endblock %}
