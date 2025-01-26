@@ -171,3 +171,4 @@ cython_debug/
 .pypirc
 
 #OPEN_AI_API_KEY
+openai.api_key
