@@ -1,106 +1,273 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="container mx-auto py-5 ">
-    <header class="text-center bg-green-600 rounded-xl p-2">
-        <h1 class="text-4xl font-bold text-white">Symplifying energy consumption within Schools</h1>
-        <p class="text-2xl mt-2 text-white">Optimizing utility consumption in NYC through data-driven insights</p>
+<div class="container mx-auto py-10">
+    <header class="text-center">
+      <h1 class="text-4xl font-bold text-[#71A300]">SimpliSustain</h1>
+      <p class="text-lg mt-2">
+        Optimizing utility consumption in NYC through data-driven insights
+      </p>
     </header>
-
+   
+   
     <div class="mt-8 bg-white shadow-lg rounded-lg p-6">
-        <h2 class="text-2xl font-bold text-[#71A300] mb-4">Interactive NYC Energy Map</h2>
-        <p class="mb-4">Toggle between total energy, natural gas, steam, and electricity usage heat maps, or view all combined.</p>
-
-        <!-- Heatmap Controls -->
-        <div class="flex justify-center space-x-4 mb-6">
-            <button id="totalEnergyToggle" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                Show Total Energy
-            </button>
-            <button id="naturalGasToggle" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
-                Show Natural Gas
-            </button>
-            <button id="steamToggle" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                Show Steam
-            </button>
-            <button id="electricityToggle" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                Show Electricity
-            </button>
-            <button id="combinedToggle" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
-                Show All Combined
-            </button>
+      <h2 class="text-2xl font-bold text-[#71A300] mb-4">
+        Interactive NYC Energy Map
+      </h2>
+      <p class="mb-4">
+        Toggle between total energy, natural gas, steam, and electricity usage
+        heat maps, or view all combined.
+      </p>
+   
+   
+      <div id="data-store" style="display: none">
+        <p id="total-energy" data-value=""></p>
+        <p id="natural-gas" data-value=""></p>
+        <p id="steam" data-value=""></p>
+        <p id="electricity" data-value=""></p>
+      </div>
+   
+   
+      <!-- Heatmap Controls -->
+      <div class="flex justify-center space-x-4 mb-6">
+        <button
+          id="totalEnergyToggle"
+          class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Show Total Energy
+        </button>
+        <button
+          id="naturalGasToggle"
+          class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+        >
+          Show Natural Gas
+        </button>
+        <button
+          id="steamToggle"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Show Steam
+        </button>
+        <button
+          id="electricityToggle"
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Show Electricity
+        </button>
+        <button
+          id="combinedToggle"
+          class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+        >
+          Show All Combined
+        </button>
+      </div>
+   
+   
+      <!-- Heatmap Section with Map -->
+      <div
+        class="relative bg-gray-200 border-2 border-gray-300 rounded-lg overflow-hidden h-96"
+      >
+        <div id="map" class="absolute inset-0" style="height: 100%"></div>
+        <!-- Leaflet Map container -->
+        <p
+          class="absolute inset-0 flex items-center justify-center text-gray-500 text-lg"
+          id="heatmapPlaceholder"
+        >
+          Heatmap will display here.
+        </p>
+        <canvas id="heatmapCanvas" class="absolute inset-0"></canvas>
+      </div>
+   
+   
+      <!-- Legend -->
+      <div class="mt-6">
+        <h3 class="text-lg font-bold text-[#71A300] mb-2">Legend</h3>
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-green-500"></div>
+            <span class="ml-2">Total Energy</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-yellow-500"></div>
+            <span class="ml-2">Natural Gas</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-blue-500"></div>
+            <span class="ml-2">Steam</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-red-500"></div>
+            <span class="ml-2">Electricity</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-6 h-6 bg-purple-500"></div>
+            <span class="ml-2">All Combined</span>
+          </div>
         </div>
-
-        <!-- Heatmap Section -->
-        <div class="relative bg-gray-200 border-2 border-gray-300 rounded-lg overflow-hidden h-96">
-            <p class="absolute inset-0 flex items-center justify-center text-gray-500 text-lg" id="heatmapPlaceholder">
-                Heatmap will display here.
-            </p>
-            <canvas id="heatmapCanvas" class="absolute inset-0"></canvas>
-        </div>
-
-        <!-- Legend -->
-        <div class="mt-6">
-            <h3 class="text-lg font-bold text-[#71A300] mb-2">Legend</h3>
-            <div class="flex items-center space-x-6">
-                <div class="flex items-center">
-                    <div class="w-6 h-6 bg-green-500"></div>
-                    <span class="ml-2">Total Energy</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="w-6 h-6 bg-yellow-500"></div>
-                    <span class="ml-2">Natural Gas</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="w-6 h-6 bg-blue-500"></div>
-                    <span class="ml-2">Steam</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="w-6 h-6 bg-red-500"></div>
-                    <span class="ml-2">Electricity</span>
-                </div>
-                <div class="flex items-center">
-                    <div class="w-6 h-6 bg-purple-500"></div>
-                    <span class="ml-2">All Combined</span>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('heatmapCanvas');
-    const placeholder = document.getElementById('heatmapPlaceholder');
-    const ctx = canvas.getContext('2d');
-
-    const totalEnergyToggle = document.getElementById('totalEnergyToggle');
-    const naturalGasToggle = document.getElementById('naturalGasToggle');
-    const steamToggle = document.getElementById('steamToggle');
-    const electricityToggle = document.getElementById('electricityToggle');
-    const combinedToggle = document.getElementById('combinedToggle');
-
-    // Dummy heatmap drawing functions
-    const drawHeatmap = (type) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (type === 'totalEnergy') {
-            ctx.fillStyle = 'rgba(34, 139, 34, 0.5)'; // Green for Total Energy
-        } else if (type === 'naturalGas') {
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)'; // Yellow for Natural Gas
-        } else if (type === 'steam') {
-            ctx.fillStyle = 'rgba(0, 0, 255, 0.5)'; // Blue for Steam
-        } else if (type === 'electricity') {
-            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red for Electricity
-        } else if (type === 'combined') {
-            ctx.fillStyle = 'rgba(128, 0, 128, 0.5)'; // Purple for All Combined
+   </div>
+   
+   
+   <!-- Include Leaflet JS and CSS -->
+   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+   
+   
+   <!-- Include the external read.js file -->
+   <script src="/static/js/read.js"></script>
+   
+   
+   <div id="map" class="relative h-96 w-full"></div>
+   <!-- Add a button to toggle red circles -->
+   <div class="flex justify-center space-x-4 mb-6">
+    <button
+      id="showCirclesToggle"
+      class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+    >
+      Show Red Circles
+    </button>
+   </div>
+   
+   
+   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const map = L.map("map", {
+        center: [40.7128, -74.006], // NYC coordinates
+        zoom: 10, // Zoom level
+        minZoom: 10, // Prevent zooming out
+        maxZoom: 18, // Allow zooming in
+        zoomControl: true, // Disable zoom control UI
+      });
+   
+   
+      // Custom Tile Layer
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://carto.com/attributions">CartoDB</a> &mdash; ',
+      }).addTo(map);
+   
+   
+      L.control.scale().addTo(map); // Optional: Add a scale control
+   
+   
+      // Borough coordinates
+      const boroughCoordinates = {
+        Manhattan: [40.7831, -73.9712],
+        Brooklyn: [40.6782, -73.9442],
+        Queens: [40.7282, -73.7949],
+        Bronx: [40.8448, -73.8648],
+        StatenIsland: [40.5795, -74.1502],
+      };
+   
+   
+      // Circle layers storage
+      const circleLayers = {
+        totalEnergy: [],
+        naturalGas: [],
+        steam: [],
+        electricity: [],
+        combined: [],
+      };
+   
+   
+      // Wait for processed borough data from `read.js`
+      const waitForData = setInterval(() => {
+        if (window.boroughData) {
+          clearInterval(waitForData);
+   
+   
+          // Populate circle layers
+          Object.entries(window.boroughData).forEach(([borough, data]) => {
+            const avgUsage = data.totalUsage / (data.count || 1);
+            const intensity = Math.min(1, avgUsage / 1000); // Normalize intensity
+            const coords = boroughCoordinates[borough];
+   
+   
+            if (coords) {
+              // Add circles for each type
+              circleLayers.totalEnergy.push(
+                L.circle(coords, {
+                  color: "green",
+                  fillColor: "green",
+                  opacity: 0.5,
+                  radius: 970 * intensity,
+                }).bindPopup(
+                  `<b>${borough}</b><br>Total Energy: ${avgUsage.toFixed(2)}`
+                )
+              );
+              circleLayers.naturalGas.push(
+                L.circle(coords, {
+                  color: "yellow",
+                  fillColor: "yellow",
+                  fillOpacity: intensity,
+                  radius: 1700 * intensity,
+                }).bindPopup(
+                  `<b>${borough}</b><br>Natural Gas: ${avgUsage.toFixed(2)}`
+                )
+              );
+              circleLayers.steam.push(
+                L.circle(coords, {
+                  color: "blue",
+                  fillColor: "blue",
+                  fillOpacity: 0.5,
+                  radius: 230 * intensity,
+                }).bindPopup(`<b>${borough}</b><br>Steam: ${avgUsage.toFixed(2)}`)
+              );
+              circleLayers.electricity.push(
+                L.circle(coords, {
+                  color: "red",
+                  fillColor: "red",
+                  fillOpacity: 0.5,
+                  radius: 1400 * intensity,
+                }).bindPopup(
+                  `<b>${borough}</b><br>Electricity: ${avgUsage.toFixed(2)}`
+                )
+              );
+              circleLayers.combined.push(
+                L.circle(coords, {
+                  color: "purple",
+                  fillColor: "purple",
+                  fillOpacity: intensity,
+                  radius: 3500 * intensity,
+                }).bindPopup(
+                  `<b>${borough}</b><br>All Combined: ${avgUsage.toFixed(2)}`
+                )
+              );
+            }
+          });
         }
-        ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
-        placeholder.style.display = 'none';
-    };
-
-    // Toggle button event listeners
-    totalEnergyToggle.addEventListener('click', () => drawHeatmap('totalEnergy'));
-    naturalGasToggle.addEventListener('click', () => drawHeatmap('naturalGas'));
-    steamToggle.addEventListener('click', () => drawHeatmap('steam'));
-    electricityToggle.addEventListener('click', () => drawHeatmap('electricity'));
-    combinedToggle.addEventListener('click', () => drawHeatmap('combined'));
-</script>
-{% endblock %}
+      }, 100);
+   
+   
+      // Button click logic
+      const buttons = {
+        totalEnergy: document.getElementById("totalEnergyToggle"),
+        naturalGas: document.getElementById("naturalGasToggle"),
+        steam: document.getElementById("steamToggle"),
+        electricity: document.getElementById("electricityToggle"),
+        combined: document.getElementById("combinedToggle"),
+      };
+   
+   
+      const showLayer = (layerType) => {
+        Object.values(circleLayers).forEach((layers) => {
+          layers.forEach((circle) => map.removeLayer(circle));
+        });
+        circleLayers[layerType].forEach((circle) => circle.addTo(map));
+      };
+   
+   
+      // Attach click events to buttons
+      buttons.totalEnergy.addEventListener("click", () =>
+        showLayer("totalEnergy")
+      );
+      buttons.naturalGas.addEventListener("click", () => showLayer("naturalGas"));
+      buttons.steam.addEventListener("click", () => showLayer("steam"));
+      buttons.electricity.addEventListener("click", () =>
+        showLayer("electricity")
+      );
+      buttons.combined.addEventListener("click", () => showLayer("combined"));
+    });
+   </script>
+   
+   
+   {% endblock %}
+   
