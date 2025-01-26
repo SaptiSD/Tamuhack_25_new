@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # OpenAI API Key
-openai.api_key = "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"  # Replace with your actual OpenAI API key
+openai.api_key = "KEY HERE"
 
 # Path to JSON data file
 DATA_FILE = '/Users/travis/Desktop/Projects/tamuHack25/Tamuhack_25_new/static/data/nyc_schools_energy_dynamodb.json'
