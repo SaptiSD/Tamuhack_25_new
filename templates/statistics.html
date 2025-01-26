@@ -2,9 +2,9 @@
 
 {% block content %}
 <section class="text-center py-10">
-    <h1 class="text-3xl font-bold text-[#71A300]">Statistics</h1>
+    <h1 class="text-3xl font-bold text-[#71A300]">Mean Consumption by Borough</h1>
     <div class="mt-6 bg-white shadow-lg rounded-lg p-6">
-        <!-- Controls for Borough and Timeframe -->
+        <!-- Controls for Borough and Filter -->
         <div class="flex justify-between items-center mb-6">
             <div>
                 <label for="borough" class="text-lg font-bold text-[#71A300]">Borough:</label>
@@ -18,11 +18,13 @@
                 </select>
             </div>
             <div>
-                <label for="timeframe" class="text-lg font-bold text-[#71A300]">Timeframe:</label>
-                <select id="timeframe" class="border border-gray-300 rounded p-2">
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
+                <label for="filter" class="text-lg font-bold text-[#71A300]">Filter:</label>
+                <select id="filter" class="border border-gray-300 rounded p-2">
+                    <option value="all">All</option>
+                    <option value="electricity">Energy Cost</option>
+                    <option value="gas">Natural Gas</option>
+                    <option value="steam">Steam</option>
+                    <option value="total">Total Usage</option>
                 </select>
             </div>
         </div>
@@ -58,69 +60,104 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Ensure the chart displays correctly by initializing it dynamically
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('utilityChart').getContext('2d');
+    async function fetchData() {
+        const response = await fetch('/static/data/nyc_schools_energy_dynamodb.json');
+        if (!response.ok) throw new Error(`Error fetching data: ${response.status}`);
+        return response.json();
+    }
 
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                datasets: [
-                    {
-                        label: 'Energy Cost',
-                        data: [50, 60, 55, 70, 65, 80, 75],
-                        borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
-                        fill: true,
+    document.addEventListener('DOMContentLoaded', async function () {
+        try {
+            const jsonData = await fetchData();
+            const ctx = document.getElementById('utilityChart').getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
                     },
-                    {
-                        label: 'Natural Gas',
-                        data: [30, 40, 35, 50, 45, 55, 50],
-                        borderColor: 'yellow',
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Steam',
-                        data: [20, 30, 25, 35, 30, 40, 35],
-                        borderColor: 'red',
-                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Total Usage',
-                        data: [100, 130, 115, 155, 140, 175, 160],
-                        borderColor: 'green',
-                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
-                        fill: true,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
+                    scales: {
+                        x: { title: { display: true, text: 'Month' } },
+                        y: { title: { display: true, text: 'Usage/Cost' } },
                     },
                 },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Days',
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Usage',
-                        },
-                    },
-                },
-            },
-        });
+            });
+
+            const boroughSelect = document.getElementById('borough');
+            const filterSelect = document.getElementById('filter');
+
+            const colors = {
+                electricity: { borderColor: 'blue', backgroundColor: 'rgba(0, 0, 255, 0.1)' },
+                gas: { borderColor: 'yellow', backgroundColor: 'rgba(255, 255, 0, 0.1)' },
+                steam: { borderColor: 'red', backgroundColor: 'rgba(255, 0, 0, 0.1)' },
+                total: { borderColor: 'green', backgroundColor: 'rgba(0, 255, 0, 0.1)' },
+            };
+
+            function updateChart() {
+                const selectedBorough = boroughSelect.value;
+                const selectedFilter = filterSelect.value;
+
+                const filteredData = jsonData.filter(item =>
+                    selectedBorough === 'all' || item.Borough.toLowerCase() === selectedBorough
+                );
+
+                const groupedData = {};
+                filteredData.forEach(item => {
+                    const month = item.YearMonth.split('-')[1];
+                    if (!groupedData[month]) groupedData[month] = { electricity: 0, gas: 0, steam: 0, total: 0, count: 0 };
+
+                    groupedData[month].electricity += item.ElectricityCost || 0;
+                    groupedData[month].gas += item.GasUsage || 0;
+                    groupedData[month].steam += item.SteamUsage || 0;
+                    groupedData[month].total += item.TotalUsage || 0;
+                    groupedData[month].count++;
+                });
+
+                const labels = Object.keys(groupedData).sort();
+                const datasets = [];
+
+                if (selectedFilter === 'all') {
+                    Object.keys(colors).forEach(filter => {
+                        datasets.push({
+                            label: filter.charAt(0).toUpperCase() + filter.slice(1),
+                            data: labels.map(month => groupedData[month][filter] / groupedData[month].count),
+                            borderColor: colors[filter].borderColor,
+                            backgroundColor: colors[filter].backgroundColor,
+                            fill: true,
+                        });
+                    });
+                } else {
+                    datasets.push({
+                        label: selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1),
+                        data: labels.map(month => groupedData[month][selectedFilter] / groupedData[month].count),
+                        borderColor: colors[selectedFilter].borderColor,
+                        backgroundColor: colors[selectedFilter].backgroundColor,
+                        fill: true,
+                    });
+                }
+
+                chart.data.labels = labels.map(month =>
+                    new Date(2024, month - 1).toLocaleString('default', { month: 'short' })
+                );
+                chart.data.datasets = datasets;
+                chart.update();
+            }
+
+            boroughSelect.addEventListener('change', updateChart);
+            filterSelect.addEventListener('change', updateChart);
+
+            updateChart();
+        } catch (error) {
+            console.error('Failed to initialize chart:', error);
+        }
     });
 </script>
+
 {% endblock %}
+
